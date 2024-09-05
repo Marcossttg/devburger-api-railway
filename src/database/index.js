@@ -18,33 +18,19 @@ class Database {
   }
 
   init() {
-    this.connection = new Sequelize({
-      ...configDatabase,
-      logging: false,
-    })
+    this.connection = new Sequelize('postgresql://postgres:WDFTqwfTFKZRPpJSYmEmPgkncVaWrnRG@junction.proxy.rlwy.net:22573/railway')
     models
       .map((model) => model.init(this.connection))
       .map(
         (model) => model.associate && model.associate(this.connection.models),
       )
-
-    // this.connection = new Sequelize(configDatabase.url)
-    // models
-    //   .map((model) => model.init(this.connection))
-    //   .map((model) => model.associate && model.associate(this.connection.models))
   }
 
   mongo() {
     this.mongoConnection = mongoose.connect(
-      'mongodb://localhost:27017/devburger',
+      'mongodb://mongo:gqSdwrjWqmlChGBucQgrsjoBtpVKZslJ@junction.proxy.rlwy.net:30960',
     )
   }
-
-  // mongo() {
-  //   this.mongoConnection = mongoose.connect(
-  //     'mongodb://mongo:HFwInjREsFBDnqFtcInSNxfhaWXTtuFc@viaduct.proxy.rlwy.net:58412',
-  //   )
-  // }
 }
 
 export default new Database()
