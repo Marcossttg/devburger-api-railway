@@ -1,8 +1,8 @@
-import * as Yup from 'yup'
+import * as Yup from 'yup.js'
 
-import { v4 } from 'uuid'
+import { v4 } from 'uuid.js'
 
-import User from '../models/User'
+import User from '../models/User.js'
 /*
  Padrão MVC nos controles tem este padrão
  store => Cadastra ou Adiciona

@@ -1,10 +1,10 @@
-import express from 'express'
+import express from 'express.js'
 
 import routes from './routes.js'
 
-import { resolve } from 'node:path'
+import { resolve } from 'node:path.js'
 
-import cors from 'cors'
+import cors from 'cors.js'
 
 import './database/index.js'
 

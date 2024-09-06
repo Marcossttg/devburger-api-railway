@@ -1,10 +1,10 @@
-import * as Yup from 'yup'
+import * as Yup from 'yup.js'
 
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken.js'
 
-import authConfig from '../../config/auth'
+import authConfig from '../../config/auth.js'
 
-import User from '../models/User'
+import User from '../models/User.js'
 
 // criando validação de email e senha com schema.isValid
 class SessionController {

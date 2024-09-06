@@ -1,8 +1,8 @@
-import multer from 'multer'
+import multer from 'multer.js'
 
-import { v4 } from 'uuid'
+import { v4 } from 'uuid.js'
 
-import { extname, resolve } from 'node:path'
+import { extname, resolve } from 'node:path.js'
 
 export default {
   storage: multer.diskStorage({
