@@ -17,7 +17,7 @@ const upload = multer(multerConfig)
 const routes = new Router()
 
 routes.get('/', (request, response) => {
-  return response.json({ message: 'Welcome to the DEVBURGER-API' })
+  return response.json({ message: 'Welcome to the DEVBURGER-API-RAILWAY' })
 })
 
 routes.post('/users', UserController.store)
