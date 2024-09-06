@@ -1,8 +1,10 @@
-import multer from 'multer.js'
+import { fileURLToPath } from 'url';
+import { dirname, resolve, extname } from 'path';
+import multer from 'multer';
+import { v4 } from 'uuid';
 
-import { v4 } from 'uuid.js'
-
-import { extname, resolve } from 'node:path.js'
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default {
   storage: multer.diskStorage({
@@ -12,3 +14,4 @@ export default {
     },
   }),
 }
+

@@ -1,6 +1,6 @@
-import * as Yup from 'yup.js'
+import * as Yup from 'yup'
 
-import jwt from 'jsonwebtoken.js'
+import jwt from 'jsonwebtoken'
 
 import authConfig from '../../config/auth.js'
 

@@ -1,4 +1,4 @@
-import Jwt from 'jsonwebtoken.js'
+import Jwt from 'jsonwebtoken'
 
 import authConfig from '../../config/auth.js'
 

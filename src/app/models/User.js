@@ -1,4 +1,4 @@
-import Sequelize, { Model } from 'sequelize.js'
+import Sequelize, { Model } from 'sequelize'
 
 import bcrypt from 'bcrypt'
 

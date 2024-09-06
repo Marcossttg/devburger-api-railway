@@ -1,6 +1,6 @@
-import * as Yup from 'yup.js'
+import * as Yup from 'yup'
 
-import { v4 } from 'uuid.js'
+import { v4 } from 'uuid'
 
 import User from '../models/User.js'
 /*
