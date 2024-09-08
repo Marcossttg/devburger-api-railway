@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   dialect: 'postgres',
   url: 'postgresql://postgres:WDFTqwfTFKZRPpJSYmEmPgkncVaWrnRG@junction.proxy.rlwy.net:22573/railway',
   define: {
@@ -7,6 +7,7 @@ export default {
     underscoredAll: true,
   },
 };
+
 
 
 // module.exports = {
