@@ -1,13 +1,12 @@
-import Sequelize from 'sequelize';
+import Sequelize from 'sequelize'
 
-// import configDatabase from '../config/database'
+import configDatabase from '../config/database'
 
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-import User from '../app/models/User.js';
-import Product from '../app/models/Product.js';
-import Category from '../app/models/Category.js';
-
+import User from '../app/models/User'
+import Product from '../app/models/Product'
+import Category from '../app/models/Category'
 
 
 const models = [User, Product, Category]
@@ -19,12 +18,20 @@ class Database {
   }
 
   init() {
-    this.connection = new Sequelize('postgresql://postgres:WDFTqwfTFKZRPpJSYmEmPgkncVaWrnRG@junction.proxy.rlwy.net:22573/railway')
+    this.connection = new Sequelize(
+      'postgresql://postgres:NMgIdHlyVINWztvqrKeDXTeXaeWObJbD@junction.proxy.rlwy.net:16122/railway',
+      // {...configDatabase,logging: false,}
+    )
     models
       .map((model) => model.init(this.connection))
       .map(
         (model) => model.associate && model.associate(this.connection.models),
       )
+
+    // this.connection = new Sequelize(configDatabase.url)
+    // models
+    //   .map((model) => model.init(this.connection))
+    //   .map((model) => model.associate && model.associate(this.connection.models))
   }
 
   mongo() {
@@ -32,6 +39,10 @@ class Database {
       'mongodb://mongo:gqSdwrjWqmlChGBucQgrsjoBtpVKZslJ@junction.proxy.rlwy.net:30960',
     )
   }
-}
 
-export default new Database()
+  // mongo() {
+  //   this.mongoConnection = mongoose.connect(
+  //     'mongodb://mongo:HFwInjREsFBDnqFtcInSNxfhaWXTtuFc@viaduct.proxy.rlwy.net:58412',
+  //   )
+  // }
+}
