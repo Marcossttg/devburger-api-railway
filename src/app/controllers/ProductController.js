@@ -1,31 +1,32 @@
-import * as Yup from 'yup'
-import Product from '../models/Product'
-import Category from '../models/Category'
-import User from '../models/User'
+import * as Yup from "yup";
+
+import Product from "../models/Product";
+import Category from "../models/Category";
+import User from "../models/User";
 
 class ProductController {
-  async store(request, response) {
+  async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       price: Yup.number().required(),
       category_id: Yup.number().required(),
       offer: Yup.boolean(),
-    })
+    });
 
     try {
-      await schema.validateSync(request.body, { abortEarly: false })
+      await schema.validateSync(req.body, { abortEarly: false });
     } catch (err) {
-      return response.status(400).json({ error: err.errors })
+      return res.status(400).json({ error: err.errors });
     }
 
-    const { admin: isAdmin } = await User.findByPk(request.userId)
+    const { admin: isAdmin } = await User.findByPk(req.userId);
 
     if (!isAdmin) {
-      return response.status(401).json()
+      return res.status(401).json({ error: "User is not admin." });
     }
 
-    const { filename: path } = request.file
-    const { name, price, category_id, offer } = request.body
+    const { filename: path } = req.file;
+    const { name, price, category_id, offer } = req.body;
 
     const product = await Product.create({
       name,
@@ -33,74 +34,67 @@ class ProductController {
       category_id,
       path,
       offer,
-    })
+    });
 
-    return response.status(201).json(product)
+    return res.json(product);
   }
 
-  async update(request, response) {
+  async index(req, res) {
+    const products = await Product.findAll({
+      include: [
+        {
+          model: Category,
+          as: "category",
+          attributes: ["id", "name"],
+        },
+      ],
+    });
+
+    return res.json(products);
+  }
+
+  async update(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string(),
       price: Yup.number(),
       category_id: Yup.number(),
       offer: Yup.boolean(),
-    })
+    });
 
     try {
-      await schema.validateSync(request.body, { abortEarly: false })
+      await schema.validateSync(req.body, { abortEarly: false });
     } catch (err) {
-      return response.status(400).json({ error: err.errors })
+      return res.status(400).json({ error: err.errors });
     }
 
-    const { admin: isAdmin } = await User.findByPk(request.userId)
+    const { id } = req.params;
 
-    if (!isAdmin) {
-      return response.status(401).json()
+    const product = await Product.findByPk(id);
+
+    if (!product) {
+      return res.status(401).json({ error: "Product not exists!" });
     }
 
-    const { id } = request.params
-
-    const findProducts = await Product.findByPk(id)
-
-    if (!findProducts) {
-      return response.status(400).json({ error: "Make sure your product ID is correct" })
+    let path;
+    if (req.file) {
+      path = req.file.filename;
     }
 
-    let path
-    if (request.file) {
-      path = request.file.filename
-    }
+    const { name, price, category_id, offer } = req.body;
 
-    const { name, price, category_id, offer } = request.body
-
-    await Product.update({
-      name,
-      price,
-      category_id,
-      path,
-      offer,
-    }, {
-      where: {
-        id,
+    await Product.update(
+      {
+        name,
+        price,
+        category_id,
+        path,
+        offer,
       },
-    })
+      { where: { id } },
+    );
 
-    return response.status(201).json()
+    return res.status(200).json(path);
   }
-
-  async index(request, response) {
-    const products = await Product.findAll({
-      include: [
-        {
-          model: Category,
-          as: 'category',
-          attributes: ['id', 'name'],
-        },
-      ],
-    })
-    return response.json(products)
-  }
-
 }
 
-export default new ProductController()
+export default new ProductController();

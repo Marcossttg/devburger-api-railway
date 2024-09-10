@@ -1,104 +1,93 @@
-import * as Yup from 'yup'
-import Category from '../models/Category'
-import User from '../models/User'
+import * as Yup from "yup";
+
+import Category from "../models/Category";
+import User from "../models/User";
 
 class CategoryController {
-  async store(request, response) {
+  async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
-    })
+    });
 
     try {
-      await schema.validateSync(request.body, { abortEarly: false })
+      await schema.validateSync(req.body, { abortEarly: false });
     } catch (err) {
-      return response.status(400).json({ error: err.errors })
+      return res.status(400).json({ error: err.errors });
     }
 
-    const { admin: isAdmin } = await User.findByPk(request.userId)
+    const { admin: isAdmin } = await User.findByPk(req.userId);
 
     if (!isAdmin) {
-      return response.status(401).json()
+      return res.status(401).json({ error: "User is not admin." });
     }
 
-    const { filename: path } = request.file
-    const { name } = request.body
+    const { name } = req.body;
+
+    const { filename: path } = req.file;
 
     const categoryExists = await Category.findOne({
       where: { name },
-    })
+    });
 
     if (categoryExists) {
-      return response.status(400).json({ error: 'Category already exists' })
+      return res.status(400).json({ error: "Category already created." });
     }
 
     const { id } = await Category.create({
       name,
       path,
-    })
+    });
 
-    return response.status(201).json({ id, name })
+    return res.json({ id, name });
   }
 
-  async update(request, response) {
+  async index(req, res) {
+    const categories = await Category.findAll();
+
+    return res.json(categories);
+  }
+
+  async update(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string(),
-    })
+    });
 
     try {
-      await schema.validateSync(request.body, { abortEarly: false })
+      await schema.validateSync(req.body, { abortEarly: false });
     } catch (err) {
-      return response.status(400).json({ error: err.errors })
+      return res.status(400).json({ error: err.errors });
     }
 
-    const { admin: isAdmin } = await User.findByPk(request.userId)
+    const { admin: isAdmin } = await User.findByPk(req.userId);
 
     if (!isAdmin) {
-      return response.status(401).json()
+      return res.status(401).json({ error: "User is not admin." });
     }
 
-    const { id } = request.params
+    const { name } = req.body;
+    const { id } = req.params;
 
-    const categoryExists = await Category.findByPk(id)
-
-    if (!categoryExists) {
-      return response.status(400).json({ message: "Make sure your category ID is correct" })
+    let path;
+    if (req.file) {
+      path = req.file.filename;
     }
 
-    let path
-    if (request.file) {
-      path = request.file.filename
+    const category = await Category.findByPk(id);
+
+    if (!category) {
+      return res.status(401).json({ error: "Category not exists!" });
     }
 
-    const { name } = request.body
-
-    if (name) {
-      const categoryNameExists = await Category.findOne({
-        where: { name },
-      })
-
-      if (categoryNameExists && categoryNameExists.id !== +id) {
-        return response.status(400).json({ error: 'Category already exists' })
-      }
-    }
-
-    await Category.update({
-      name,
-      path,
-    }, {
-      where: {
-        id,
+    await Category.update(
+      {
+        name,
+        path,
       },
-    })
+      { where: { id } },
+    );
 
-    return response.status(200).json()
+    return res.json({ id, name });
   }
-
-  async index(request, response) {
-    const categories = await Category.findAll({
-    })
-    return response.json(categories)
-  }
-
 }
 
-export default new CategoryController()
+export default new CategoryController();
