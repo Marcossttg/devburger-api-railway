@@ -48,6 +48,7 @@ export default new Database();
 //       (model) => model.associate && model.associate(this.connection.models),
 //     );
 // }
+// A
 
 // import Sequelize from 'sequelize'
 
