@@ -23,7 +23,6 @@ class Category extends Model {
 
 export default Category;
 
-
 // import Sequelize, { Model } from 'sequelize'
 
 // class Category extends Model {

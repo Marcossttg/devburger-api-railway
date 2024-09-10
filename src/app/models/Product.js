@@ -32,8 +32,6 @@ class Product extends Model {
 
 export default Product;
 
-
-
 // import Sequelize, { Model } from 'sequelize'
 
 // class Product extends Model {
