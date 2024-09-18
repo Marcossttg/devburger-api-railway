@@ -10,7 +10,7 @@ module.exports = {
   // database: process.env.PG_DATABASE,
 
   // url para utilizar com railway,
-  url: 'postgresql://postgres:NMgIdHlyVINWztvqrKeDXTeXaeWObJbD@junction.proxy.rlwy.net:16122/railway',
+  url: 'postgresql://postgres:WDFTqwfTFKZRPpJSYmEmPgkncVaWrnRG@junction.proxy.rlwy.net:22573/railway',
 
   define: {
     timestamps: true,
