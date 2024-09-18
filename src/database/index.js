@@ -19,7 +19,7 @@ class Database {
 
   init() {
     this.connection = new Sequelize(
-      'postgresql://postgres:NMgIdHlyVINWztvqrKeDXTeXaeWObJbD@junction.proxy.rlwy.net:16122/railway',
+      'postgresql://postgres:WDFTqwfTFKZRPpJSYmEmPgkncVaWrnRG@junction.proxy.rlwy.net:22573/railway',
       // {...configDatabase,logging: false,}
     )
     models
