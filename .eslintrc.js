@@ -3,36 +3,20 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: ["airbnb-base", "prettier"],
-  plugins: ["prettier"],
-  overrides: [
-    {
-      env: {
-        node: true,
-      },
-      files: [".eslintrc.{js,cjs}"],
-      parserOptions: {
-        sourceType: "script",
-      },
-    },
-  ],
+  extends: ['standard', 'prettier'],
+  plugins: ['prettier'],
   parserOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
+    ecmaVersion: 'latest',
+    sourceType: 'module',
   },
   rules: {
-    "no-console": "off",
-    "no-unused-vars": "off",
-    "import/no-extraneous-dependencies": "off",
-    camelcase: "off",
-    "class-methods-use-this": "off",
-    "no-param-reassign": "off",
-    "consistent-return": "off",
-    "prettier/prettier": [
-      "error",
-      {
-        endOfLine: "auto",
-      },
-    ],
+    'camelcase': 'off',
+    'no-unused-vars': 'off',
+    'react/prop-types': 'off',
+    'react/react-in-jsx-scope': 'off',
+    'space-before-function-paren': 'off',
+    'no-console': 'warn',
+    'comma-dangle': ['error', 'always-multiline'],
+    'jsx-quotes': ['error', 'prefer-double'],
   },
-};
+}

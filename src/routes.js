@@ -1,82 +1,42 @@
-import { Router } from "express";
-import multer from "multer";
-import multerConfig from "./config/multer";
+import { Router } from 'express'
 
-import UserController from "./app/controllers/UserController";
-import SessionController from "./app/controllers/SessionController";
-import ProductController from "./app/controllers/ProductController";
-import CategoryController from "./app/controllers/CategoryController";
-import OrderController from "./app/controllers/OrderController";
+import multer from 'multer'
 
-import authMiddleware from "./app/middlewares/auth";
+import multerConfig from './config/multer'
 
-const upload = multer(multerConfig);
+import authMiddleware from './app/middlewares/auth'
 
-const routes = new Router();
+import UserController from './app/controllers/UserController'
+import SessionController from './app/controllers/SessionController'
+import ProductController from './app/controllers/ProductController'
+import CategoryController from './app/controllers/CategoryController'
+import OrderController from './app/controllers/OrderController'
 
-routes.get("/", (req, res) =>
-  res.json({ message: 'Welcome to the DEVBURGER-API-RAILWAY' }),
-);
+const upload = multer(multerConfig)
 
-routes.post("/users", UserController.store);
-routes.post("/sessions", SessionController.store);
+const routes = new Router()
 
-routes.use(authMiddleware);
-routes.post("/products", upload.single("file"), ProductController.store);
-routes.get("/products", ProductController.index);
-routes.put("/products/:id", upload.single("file"), ProductController.update);
+routes.get('/', (request, response) => {
+  return response.json({ message: 'Welcome to the DEVBURGER-API' })
+})
 
-routes.post("/categories", upload.single("file"), CategoryController.store);
-routes.get("/categories", CategoryController.index);
-routes.put("/categories/:id", upload.single("file"), CategoryController.update);
+routes.post('/users', UserController.store)
+routes.post('/session', SessionController.store)
 
-routes.post("/orders", OrderController.store);
-routes.get("/orders", OrderController.index);
-routes.put("/orders/:id", OrderController.update);
+// Adicionando routes.use() com middleware para que todas as rotas abaixo.
+// Quando chamado, recebe o middleware como autenticação.
+routes.use(authMiddleware)
 
-export default routes;
+routes.post('/products', upload.single('file'), ProductController.store)
+routes.get('/products', ProductController.index)
+routes.put('/products/:id', upload.single('file'), ProductController.update)
 
+routes.post('/categories', upload.single('file'), CategoryController.store)
+routes.get('/categories', CategoryController.index)
+routes.put('/categories/:id', upload.single('file'), CategoryController.update)
 
-// import { Router } from 'express'
+routes.post('/orders', OrderController.store)
+routes.get('/orders', OrderController.index)
+routes.put('/orders/:id', OrderController.update)
 
-// import multer from 'multer';
-
-// import multerConfig from './config/multer'
-
-// import authMiddleware from './app/middlewares/auth'
-
-// import UserController from './app/controllers/UserController';
-// import SessionController from './app/controllers/SessionController';
-// import ProductController from './app/controllers/ProductController';
-// import CategoryController from './app/controllers/CategoryController';
-// import OrderController from './app/controllers/OrderController';
-
-
-// const upload = multer(multerConfig)
-
-// const routes = new Router()
-
-// routes.get('/', (request, response) => {
-//   return response.json({ message: 'Welcome to the DEVBURGER-API-RAILWAY' })
-// })
-
-// routes.post('/users', UserController.store)
-// routes.post('/session', SessionController.store)
-
-// // Adicionando routes.use() com middleware para que todas as rotas abaixo.
-// // Quando chamado, recebe o middleware como autenticação.
-// routes.use(authMiddleware)
-
-// routes.post('/products', upload.single('file'), ProductController.store)
-// routes.get('/products', ProductController.index)
-// routes.put('/products/:id', upload.single('file'), ProductController.update)
-
-// routes.post('/categories', upload.single('file'), CategoryController.store)
-// routes.get('/categories', CategoryController.index)
-// routes.put('/categories/:id', upload.single('file'), CategoryController.update)
-
-// routes.post('/orders', OrderController.store)
-// routes.get('/orders', OrderController.index)
-// routes.put('/orders/:id', OrderController.update)
-
-// export default routes
+export default routes

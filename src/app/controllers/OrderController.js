@@ -1,11 +1,11 @@
-import * as Yup from "yup";
-
-import Product from "../models/Product";
-import Category from "../models/Category";
-import Order from "../schemas/Order";
+import * as Yup from 'yup'
+import Order from '../schemas/Order'
+import Product from '../models/Product'
+import Category from '../models/Category'
+import User from '../models/User'
 
 class OrderController {
-  async store(req, res) {
+  async store(request, response) {
     const schema = Yup.object().shape({
       products: Yup.array()
         .required()
@@ -15,33 +15,33 @@ class OrderController {
             quantity: Yup.number().required(),
           }),
         ),
-    });
+    })
 
     try {
-      await schema.validateSync(req.body, { abortEarly: false });
+      await schema.validateSync(request.body, { abortEarly: false })
     } catch (err) {
-      return res.status(400).json({ error: err.errors });
+      return response.status(400).json({ error: err.errors })
     }
 
-    const productsId = req.body.products.map((product) => product.id);
+    const { products } = request.body
 
-    const updatedProducts = await Product.findAll({
+    const productsId = products.map((product) => product.id)
+
+    const findProducts = await Product.findAll({
       where: {
         id: productsId,
       },
       include: [
         {
           model: Category,
-          as: "category",
-          attributes: ["name"],
+          as: 'category',
+          attributes: ['name'],
         },
       ],
-    });
+    })
 
-    const editedProduct = updatedProducts.map((product) => {
-      const quantityIndex = req.body.products.findIndex(
-        (requestProduct) => requestProduct.id === product.id,
-      );
+    const formattedProducts = findProducts.map((product) => {
+      const productIndex = products.findIndex((item) => item.id === product.id)
 
       const newProduct = {
         id: product.id,
@@ -49,61 +49,59 @@ class OrderController {
         price: product.price,
         category: product.category.name,
         url: product.url,
-        quantity: req.body.products[quantityIndex].quantity,
-      };
+        quantity: products[productIndex].quantity,
+      }
 
-      return newProduct;
-    });
+      return newProduct
+    })
 
     const order = {
       user: {
-        id: req.userId,
-        name: req.userName,
+        id: request.userId,
+        name: request.userName,
       },
-      products: editedProduct,
-      status: "Pedido realizado",
-    };
+      products: formattedProducts,
+      status: 'Pedido realizado',
+    }
 
-    const orderSchema = await Order.create(order);
+    const orderResponse = await Order.create(order)
 
-    return res.status(201).json(orderSchema);
+    return response.status(201).json(orderResponse)
   }
 
-  async index(req, res) {
+  async index(request, response) {
     const orders = await Order.find();
-
-    return res.json(orders);
+    return response.json(orders)
   }
 
-  async update(req, res) {
+  async update(request, response) {
     const schema = Yup.object().shape({
       status: Yup.string().required(),
-    });
-
+    })
     try {
-      await schema.validateSync(req.body, { abortEarly: false });
+      await schema.validateSync(request.body, { abortEarly: false })
     } catch (err) {
-      return res.status(400).json({ error: err.errors });
+      return response.status(400).json({ error: err.errors })
     }
 
-    const { id } = req.params;
-    const { status } = req.body;
+    const { admin: isAdmin } = await User.findByPk(request.userId)
 
-    try {
-      await Order.updateOne(
-        {
-          _id: id,
-        },
-        {
-          status,
-        },
-      );
-    } catch (err) {
-      return res.status(400).json({ error: err.message });
+    if (!isAdmin) {
+      return response.status(401).json()
     }
 
-    return res.json({ message: "Status was updated." });
+
+    const { id } = request.params
+    const { status } = request.body
+
+    try {
+      await Order.updateOne({ _id: id }, { status })
+    } catch (err) {
+      return response.status(400).json({ error: err.message })
+    }
+
+    return response.json({ message: 'Status updated sucessfully' })
   }
 }
 
-export default new OrderController();
+export default new OrderController()

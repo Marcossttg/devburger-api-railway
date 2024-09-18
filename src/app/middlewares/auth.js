@@ -1,25 +1,28 @@
-import jwt from "jsonwebtoken";
-import authConfig from "../../config/auth";
+import Jwt from 'jsonwebtoken'
 
-export default (req, res, next) => {
-  const authToken = req.headers.authorization;
+import authConfig from '../../config/auth'
 
-  if (!authToken) return res.status(401).json({ error: "Token not provied!" });
+export default (request, response, next) => {
+  const authToken = request.headers.authorization
 
-  const token = authToken.split(" ")[1];
+  if (!authToken) {
+    return response.status(401).json({ error: 'Token not provided' })
+  }
+
+  const token = authToken.split(' ')[1]
 
   try {
-    jwt.verify(token, authConfig.secret, (err, decoded) => {
+    Jwt.verify(token, authConfig.secret, function (err, decoded) {
       if (err) {
-        throw new Error();
+        throw new Error()
       }
 
-      req.userId = decoded.id;
-      req.userName = decoded.name;
+      request.userId = decoded.id
+      request.userName = decoded.name
 
-      return next();
-    });
+      return next()
+    })
   } catch (err) {
-    return res.status(401).json({ error: "Token is invalid" });
+    return response.status(401).json({ error: 'Token is invalid' })
   }
-};
+}

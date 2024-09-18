@@ -1,43 +1,56 @@
-import * as Yup from "yup";
-import jwt from "jsonwebtoken";
-import authConfig from "../../config/auth";
-import User from "../models/User";
+import * as Yup from 'yup'
 
+import jwt from 'jsonwebtoken'
+
+import authConfig from '../../config/auth'
+
+import User from '../models/User'
+
+// criando validação de email e senha com schema.isValid
 class SessionController {
-  async store(req, res) {
+  async store(request, response) {
     const schema = Yup.object().shape({
       email: Yup.string().email().required(),
       password: Yup.string().required(),
-    });
+    })
+
+    const isValid = await schema.isValid(request.body)
 
     const userEmailOrPasswordIncorrect = () => {
-      res.status(401).json({ error: "Your email or password is incorrect." });
-    };
+      return response
+        .status(400)
+        .json({ error: 'Make sure your password or email are correct' })
+    }
 
-    if (!(await schema.isValid(req.body)))
-      return userEmailOrPasswordIncorrect();
+    if (!isValid) {
+      return userEmailOrPasswordIncorrect()
+    }
 
-    const { email, password } = req.body;
+    const { email, password } = request.body
 
     const user = await User.findOne({
       where: { email },
-    });
+    })
+    if (!user) {
+      return userEmailOrPasswordIncorrect()
+    }
 
-    if (!user) return userEmailOrPasswordIncorrect();
+    const isSamePassword = await user.checkPassword(password)
 
-    if (!(await user.checkPassword(password)))
-      return userEmailOrPasswordIncorrect();
-
-    return res.status(201).json({
+    if (!isSamePassword) {
+      return userEmailOrPasswordIncorrect()
+    }
+    // criando validação do usuario com jwt token
+    return response.status(201).json({
       id: user.id,
-      email,
       name: user.name,
+      email,
       admin: user.admin,
       token: jwt.sign({ id: user.id, name: user.name }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       }),
-    });
+    })
   }
 }
 
-export default new SessionController();
+export default new SessionController()
