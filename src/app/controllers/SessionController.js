@@ -11,7 +11,7 @@ class SessionController {
   async store(request, response) {
     const schema = Yup.object().shape({
       email: Yup.string().email().required(),
-      password: Yup.string().required(),
+      password: Yup.string().min(3).required(),
     })
 
     const isValid = await schema.isValid(request.body)
